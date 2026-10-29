@@ -1,25 +1,44 @@
 public class Mage extends Combatant implements Specialist {
     private int mana;
     private int maxMana;
-    public Mage(String name, int hp, int mana, int lvl, int maxMana) {
-        super(name, hp, lvl);
+    private int manaRegen;
+    public Mage(String name, int hp, int maxHp, int mana, int lvl,
+                int maxMana, int manaRegen, boolean buffed, boolean down) {
+        super(name, hp, lvl, maxHp, buffed, down);
         this.mana = mana;
         this.maxMana = maxMana;
+        this.manaRegen = manaRegen;
     }
+    public int getManaRegen() {return manaRegen;}
+    public void setManaRegen(int addManaRegen) {manaRegen += addManaRegen;}
     public int getMana() {
         return mana;
     }
     public void setMana(int addMana) {
         mana+=addMana;
+        if (mana < 0) {
+            mana = 0;
+        }
+        if (mana > getMaxMana()) {
+            mana = getMaxMana();
+        }
     }
     public int getMaxMana() {return maxMana;}
     public void setMaxMana(int newMax) {maxMana = newMax;}
     @Override public String attack(Combatant target){
         int attackDamage = getLvl() * 2;
-        target.setHp(-attackDamage);
-        return getName() + " bonks " + target.getName() + " with their staff!\n" +
-                "-" + attackDamage + " health!\n" +
-                target.getName() + "'s current health: " + target.getHp();
+        if (getBuffed()) {
+            target.setHp(-attackDamage);
+            return getName() + " bonks " + target.getName() + " with their staff!\n" +
+                    "-" + attackDamage + " health!\n" +
+                    target.getName() + "'s current health: " + target.getHp();
+        } else {
+            attackDamage *= 2;
+            target.setHp(-attackDamage);
+            return getName() + " bonks " + target.getName() + "very hard with their staff!\n" +
+                    "-" + attackDamage + " health!\n" +
+                    target.getName() + "'s current health: " + target.getHp();
+        }
     }
     @Override public String takeDamage(){
         return getName() + " takes a hit!";
