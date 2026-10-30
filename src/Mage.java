@@ -3,8 +3,8 @@ public class Mage extends Combatant implements Specialist {
     private int maxMana;
     private int manaRegen;
     public Mage(String name, int hp, int maxHp, int mana, int lvl,
-                int maxMana, int manaRegen, boolean buffed, boolean down) {
-        super(name, hp, lvl, maxHp, buffed, down);
+                int maxMana, int manaRegen, boolean buffed, boolean down, boolean stunned) {
+        super(name, hp, lvl, maxHp, buffed, down, stunned);
         this.mana = mana;
         this.maxMana = maxMana;
         this.manaRegen = manaRegen;
@@ -24,27 +24,59 @@ public class Mage extends Combatant implements Specialist {
         }
     }
     public int getMaxMana() {return maxMana;}
-    public void setMaxMana(int newMax) {maxMana = newMax;}
+    public void setMaxMana(int addMaxMana) {maxMana += addMaxMana;}
     @Override public String attack(Combatant target){
-        int attackDamage = getLvl() * 2;
-        if (getBuffed()) {
-            target.setHp(-attackDamage);
-            return getName() + " bonks " + target.getName() + " with their staff!\n" +
-                    "-" + attackDamage + " health!\n" +
-                    target.getName() + "'s current health: " + target.getHp();
+        if (!getDown()) {
+            if (getStunned()) {
+                int attackDamage = getLvl() * 2;
+                if (getBuffed()) {
+                    target.setHp(-attackDamage);
+                    target.setStunned(false);
+                    return getName() + " bonks " + target.getName() + " with their staff!\n" +
+                            "-" + attackDamage + " health!\n" +
+                            target.getName() + "'s current health: " + target.getHp();
+                } else {
+                    attackDamage *= 2;
+                    target.setHp(-attackDamage);
+                    setBuffed(false);
+                    return getName() + " bonks " + target.getName() + " very hard with their staff!\n" +
+                            "-" + attackDamage + " health!\n" +
+                            target.getName() + "'s current health: " + target.getHp();
+                }
+            } else {
+                return getName() + " is stunned!";
+            }
         } else {
-            attackDamage *= 2;
-            target.setHp(-attackDamage);
-            return getName() + " bonks " + target.getName() + "very hard with their staff!\n" +
-                    "-" + attackDamage + " health!\n" +
-                    target.getName() + "'s current health: " + target.getHp();
+            return getName() + " is downed!";
         }
     }
-    @Override public String takeDamage(){
-        return getName() + " takes a hit!";
-    }
     @Override public String levelUp() {
-        return getName() + " levels up!";
+        if (getLvl() < 30) {
+            setLvl(1);
+            setMaxHp(35);
+            altSetHp(getMaxHp());
+            setManaRegen(2);
+            setMaxMana(5);
+            if (getDown()) {
+                setDown(false);
+                return getName() + " levels up!\n" +
+                        "Current level: " + getLvl() +
+                        "\n+35 max health\n" +
+                        "+2 mana regen rate\n" +
+                        "+5 max mana\n" +
+                        "Healed to full\n" +
+                        "Revived";
+            } else {
+                return getName() + " levels up!\n" +
+                        "Current level: " + getLvl() +
+                        "\n+35 max health\n" +
+                        "+2 mana regen rate\n" +
+                        "+5 max mana\n" +
+                        "Healed to full";
+            }
+        } else {
+            return getName() + " has already reached the maximum level (Level 30)";
+        }
     }
     @Override public String toString() {
         return "Name: " + getName() +
@@ -53,58 +85,88 @@ public class Mage extends Combatant implements Specialist {
                 "\nMana: " + getMana();
     }
     @Override public String useSpecialMove1(Combatant target) {
-        if (getMana() >= 50) {
-            int attackDamage = getLvl() * 20;
-            setMana(-50);
-            target.setHp(-attackDamage);
-            return getName() + " hurls a fireball at " + target.getName() + "! -" +
-                    attackDamage + " health!\n"
-                    + target.getName() + "'s current health: " + target.getHp() + "\n" +
-                    "Current mana: " + getMana();
+        if (!getDown()) {
+            if (getStunned()) {
+                if (getMana() >= 50) {
+                    int attackDamage = getLvl() * 20;
+                    setMana(-50);
+                    target.setHp(-attackDamage);
+                    target.setStunned(false);
+                    return getName() + " hurls a fireball at " + target.getName() + "! -" +
+                            attackDamage + " health!\n"
+                            + target.getName() + "'s current health: " + target.getHp() + "\n" +
+                            "Current mana: " + getMana();
+                } else {
+                    return getName() + " doesn't have enough mana left to cast fireball\n" +
+                            "Current mana: " + getMana() + "\n" +
+                            "Required mana: 50";
+                }
+            } else {
+                return getName() + " is stunned!";
+            }
         } else {
-            return getName() + " doesn't have enough mana left to cast fireball\n" +
-                    "Current mana: " + getMana() + "\n" +
-                    "Required mana: 50";
+            return getName() + " is downed!";
         }
     }
     @Override public String useSpecialMove2(Combatant target) {
-        if (getLvl() >= 10) {
-            if (getMana() >= 100) {
-                int attackDamage = getLvl() * 40;
-                setMana(-100);
-                target.setHp(-attackDamage);
-                return getName() + " shoots lightning from their" +
-                        " fingertips at " + target.getName() + "! -" +
-                        attackDamage + " health!\n" +
-                        target.getName() + "'s current health: " + target.getHp() + "\n" +
-                        "Current mana: " + getMana();
+        if (!getDown()) {
+            if (getStunned()) {
+                if (getLvl() >= 10) {
+                    if (getMana() >= 100) {
+                        int attackDamage = getLvl() * 40;
+                        setMana(-100);
+                        target.setHp(-attackDamage);
+                        target.setStunned(true);
+                        return getName() + " shoots lightning from their" +
+                                " fingertips at " + target.getName() + ", blinding them!\n-" +
+                                attackDamage + " health!\n" +
+                                target.getName() + "'s current health: " + target.getHp() + "\n" +
+                                "Current mana: " + getMana();
+                    } else {
+                        return getName() + " doesn't have enough mana left to cast lightning\n" +
+                                "Current mana: " + getMana() + "\n" +
+                                "Required mana: 100";
+                    }
+                } else {
+                    return getName() + " is too inexperienced for that move!";
+                }
             } else {
-                return getName() + " doesn't have enough mana left to cast lightning\n" +
-                        "Current mana: " + getMana() + "\n" +
-                        "Required mana: 100";
+                return getName() + " is stunned!";
             }
         } else {
-            return getName() + " is too inexperienced for that move!";
+            return getName() + " is downed!";
         }
     }
     @Override public String useSpecialMove3(Combatant target) {
-        if (getLvl() >= 20) {
-            if (getMana() >= 150) {
-                int attackDamage = getLvl() * 60;
-                setMana(-150);
-                target.setHp(-attackDamage);
-                return getName() + " shoots a concentrated beam of light at " +
-                        target.getName() + "! -" + attackDamage + " health!\n" +
-                        target.getName() + "'s current health: " +
-                        target.getHp() + "\nCurrent mana: " + getMana();
+        if (!getDown()) {
+            if (getStunned()) {
+                if (getLvl() >= 20) {
+                    if (getMana() >= 150) {
+                        int attackDamage = getLvl() * 60;
+                        setMana(-150);
+                        target.setHp(-attackDamage);
+                        target.setStunned(true);
+                        return getName() + " shoots a concentrated beam of light at " +
+                                target.getName() + ", blinding them! -" + attackDamage + " health!\n" +
+                                target.getName() + "'s current health: " +
+                                target.getHp() + "\nCurrent mana: " + getMana();
+                    } else {
+                        return getName() +
+                                " doesn't have enough mana left to cast ultralight beam\n" +
+                                "Current mana: " + getMana() + "\n" +
+                                "Required mana: 150";
+                    }
+                } else {
+                    return getName() + " is too inexperienced for that move!";
+                }
             } else {
-                return getName() +
-                        " doesn't have enough mana left to cast ultralight beam\n" +
-                        "Current mana: " + getMana() + "\n" +
-                        "Required mana: 150";
+                return getName() + " is stunned!";
             }
         } else {
-            return getName() + " is too inexperienced for that move!";
+            return getName() + " is downed!";
         }
+    }
+    public void regenerateMana() {
+        setMana(getManaRegen());
     }
 }

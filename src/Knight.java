@@ -1,32 +1,14 @@
 public class Knight extends Combatant implements Specialist{
-    private int armor;
-    private int maxArmor;
     private int stamina;
     private int maxStamina;
     private int staminaRegen;
-    private int armorRegen;
-    public Knight(String name, int hp, int maxHp, int armor, int lvl, int stamina,
-                  int maxStamina, int maxArmor, int staminaRegen, int armorRegen,
-                  boolean buffed, boolean down) {
-        super(name, hp, lvl, maxHp, buffed, down);
-        this.armor = armor;
+    public Knight(String name, int hp, int maxHp, int lvl, int stamina,
+                  int maxStamina, int staminaRegen,
+                  boolean buffed, boolean down, boolean stunned) {
+        super(name, hp, lvl, maxHp, buffed, down, stunned);
         this.stamina = stamina;
         this.maxStamina = maxStamina;
-        this.maxArmor = maxArmor;
         this.staminaRegen = staminaRegen;
-        this.armorRegen = armorRegen;
-    }
-    public int getArmor() {
-        return armor;
-    }
-    public void setArmor(int addArmor) {
-        armor += addArmor;
-        if (armor < 0) {
-            armor = 0;
-        }
-        if (armor > getMaxArmor()) {
-            armor = getMaxArmor();
-        }
     }
     public int getStamina() {return stamina;}
     public void setStamina(int addStamina) {
@@ -38,99 +20,149 @@ public class Knight extends Combatant implements Specialist{
             stamina = getMaxStamina();
         }
     }
-    public int getMaxArmor() {return maxArmor;}
-    private void setMaxArmor(int newMax) {maxArmor = newMax;}
-    private int getMaxStamina() {return maxStamina;}
-    private void setMaxStamina(int newMax) {maxStamina = newMax;}
-    private int getStaminaRegen() {return staminaRegen;}
-    private void setStaminaRegen(int addStaminaRegen) {staminaRegen+=addStaminaRegen;}
-    private int getArmorRegen() {return armorRegen;}
-    private void setArmorRegen(int addArmorRegen) {armorRegen += addArmorRegen;}
+    public int getMaxStamina() {return maxStamina;}
+    public void setMaxStamina() {maxStamina += 1;}
+    public int getStaminaRegen() {return staminaRegen;}
+    public void setStaminaRegen() {staminaRegen += 1;}
     @Override public String attack(Combatant target){
-        int attackDamage = getLvl() * 5;
-        if (getBuffed()) {
-            target.setHp(-attackDamage);
-            return getName() + " swings their sword at " + target.getName() + "! -" +
-                    attackDamage + " health!\n"
-                    + target.getName() + "'s current health: " + target.getHp();
+        if (!getDown()) {
+            if (getStunned()) {
+                int attackDamage = getLvl() * 5;
+                if (getBuffed()) {
+                    target.setHp(-attackDamage);
+                    target.setStunned(false);
+                    return getName() + " swings their sword at " + target.getName() + "! -" +
+                            attackDamage + " health!\n"
+                            + target.getName() + "'s current health: " + target.getHp();
+                } else {
+                    attackDamage *= 2;
+                    target.setHp(-attackDamage);
+                    setBuffed(false);
+                    return getName() + " swings their sword at " + target.getName() + " very hard! -" +
+                            attackDamage + " health!\n"
+                            + target.getName() + "'s current health: " + target.getHp();
+                }
+            } else {
+                return getName() + " is stunned!";
+            }
         } else {
-            attackDamage *= 2;
-            target.setHp(-attackDamage);
-            return getName() + " swings their sword at " + target.getName() + " very hard! -" +
-                    attackDamage + " health!\n"
-                    + target.getName() + "'s current health: " + target.getHp();
+            return getName() + " is downed!";
         }
     }
-    @Override public String takeDamage(){
-        return getName() + " tanks a hit!";
-    }
     @Override public String levelUp() {
-        return getName() + " levels up!";
+        if (getLvl() < 30) {
+            setLvl(1);
+            setMaxHp(40);
+            altSetHp(getMaxHp());
+            setStaminaRegen();
+            setMaxStamina();
+            setStamina(getMaxStamina());
+            if (getDown()) {
+                setDown(false);
+                return getName() + " levels up!\n" +
+                        "Current level: " + getLvl() +
+                        "\n+40 max health\n" +
+                        "+1 stamina regen rate\n" +
+                        "+1 max stamina\n" +
+                        "Healed to full\n" +
+                        "Revived";
+            } else {
+                return getName() + " levels up!\n" +
+                        "Current level: " + getLvl() +
+                        "\n+40 max health\n" +
+                        "+1 stamina regen rate\n" +
+                        "+1 max stamina\n" +
+                        "Healed to full";
+            }
+        } else {
+            return getName() + " has already reached the maximum level (Level 30)";
+        }
     }
     @Override public String toString() {
         return "Name: " + getName() +
                 "\nHP: " + getHp() +
                 "\nlvl: " + getLvl() +
-                "\nArmor: " + getArmor();
+                "\nStamina: " + getStamina();
     }
     @Override public String useSpecialMove1(Combatant target) {
-        if (getStamina() >= 2) {
-            if (getArmor() >= 1) {
-                int attackDamage = getLvl() * 20;
-                setStamina(-2);
-                target.setHp(-attackDamage);
-                setArmor(-1);
-                return getName() + " charges into " +
-                        target.getName() + "! However, it damages " + getName() +
-                        "'s armor. \n-" + attackDamage + " health! " +
-                        target.getName() + "'s current health: " + target.getHp() +
-                        "\nCurrent armor: " + getArmor();
+        if (!getDown()) {
+            if (getStunned()) {
+                if (getStamina() >= 2) {
+                    int attackDamage = getLvl() * 20;
+                    setStamina(-2);
+                    target.setHp(-attackDamage);
+                    target.setStunned(true);
+                    return getName() + " rams into " +
+                            target.getName() + ", stunning them!\n-" + attackDamage + " health! " +
+                            target.getName() + "'s current health: " + target.getHp();
+                } else {
+                    return getName() + " doesn't have enough stamina left to perform " +
+                            "bulwark charge\nCurrent stamina: " + getStamina() + "\n" +
+                            "Required stamina: 2";
+                }
             } else {
-                return getName() + " can't risk damaging their armor anymore, " +
-                        "so they're unable to perform bulwark charge\nCurrent armor: " +
-                        getArmor() + "\nRequired armor: 1";
+                return getName() + " is stunned!";
             }
         } else {
-            return getName() + " doesn't have enough stamina left to perform " +
-                    "bulwark charge\nCurrent stamina: " + getStamina() + "\n" +
-                    "Required stamina: 2";
+            return getName() + " is downed!";
         }
     }
     @Override public String useSpecialMove2(Combatant target) {
-        if (getLvl() >= 10) {
-            if (getStamina() >= 4) {
-                int attackDamage = getLvl() * 30;
-                setStamina(-4);
-                target.setHp(-attackDamage);
-                return getName() + " swiftly lunges at " +
-                        target.getName() + ", piercing him! -" + attackDamage + " health!\n" +
-                        target.getName() + "'s current health: " + target.getHp();
+        if (!getDown()) {
+            if (getStunned()) {
+                if (getLvl() >= 10) {
+                    if (getStamina() >= 4) {
+                        int attackDamage = getLvl() * 30;
+                        setStamina(-4);
+                        target.setHp(-attackDamage);
+                        target.setStunned(false);
+                        return getName() + " swiftly lunges at " +
+                                target.getName() + ", piercing them! -" + attackDamage + " health!\n" +
+                                target.getName() + "'s current health: " + target.getHp();
+                    } else {
+                        return getName() + " doesn't have enough stamina left to perform " +
+                                "piercing lunge\nCurrent stamina: " + getStamina() + "\n" +
+                                "Required stamina: 4";
+                    }
+                } else {
+                    return getName() + " is too inexperienced for that move!";
+                }
             } else {
-                return getName() + " doesn't have enough stamina left to perform " +
-                        "piercing lunge\nCurrent stamina: " + getStamina() + "\n" +
-                        "Required stamina: 4";
+                return getName() + " is stunned!";
             }
         } else {
-            return getName() + " is too inexperienced for that move!";
+            return getName() + " is downed!";
         }
     }
     @Override public String useSpecialMove3(Combatant target) {
-        if (getLvl() >= 20) {
-            if (getStamina() >= 6) {
-                int attackDamage = getLvl() * 50;
-                setStamina(-6);
-                target.setHp(-attackDamage);
-                return getName() + " strikes " +
-                        target.getName() + " with his holy sword!\n" +
-                        "-" + attackDamage + " health!\n" +
-                        target.getName() + "'s current health: " + target.getHp();
+        if (!getDown()) {
+            if (getStunned()) {
+                if (getLvl() >= 20) {
+                    if (getStamina() >= 6) {
+                        int attackDamage = getLvl() * 50;
+                        setStamina(-6);
+                        target.setHp(-attackDamage);
+                        target.setStunned(true);
+                        return getName() + " strikes " +
+                                target.getName() + " with their holy sword, blinding them!\n" +
+                                "-" + attackDamage + " health!\n" +
+                                target.getName() + "'s current health: " + target.getHp();
+                    } else {
+                        return getName() + " doesn't have enough stamina left to perform " +
+                                "consecrated cleave\nCurrent stamina: " + getStamina() + "\n" +
+                                "Required stamina: 6";
+                    }
+                } else {
+                    return getName() + " is too inexperienced for that move!";
+                }
             } else {
-                return getName() + " doesn't have enough stamina left to perform " +
-                        "consecrated cleave\nCurrent stamina: " + getStamina() + "\n" +
-                        "Required stamina: 6";
+                return getName() + " is stunned!";
             }
         } else {
-            return getName() + " is too inexperienced for that move!";
+            return getName() + " is downed!";
         }
+    }
+    public void regenerateStamina() {
+        setStamina(getStaminaRegen());
     }
 }

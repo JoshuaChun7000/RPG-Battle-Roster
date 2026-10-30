@@ -17,7 +17,6 @@ public abstract class Combatant {
         this.stunned = stunned;
     }
     public abstract String attack(Combatant target);
-    public abstract String takeDamage();
     public String getName() {
         return name;
     }
@@ -61,7 +60,7 @@ public abstract class Combatant {
     public void setDown(boolean isDown) {down = isDown;}
     public boolean getDown() {return down;}
     public void setStunned(boolean isStunned) {stunned = isStunned;}
-    public boolean getStunned() {return stunned;}
+    public boolean getStunned() {return !stunned;}
     public abstract String levelUp();
     public abstract String toString();
 }
