@@ -24,6 +24,7 @@ public class Jester extends Combatant implements Specialist {
                             + target.getName() + "'s current health: " + target.getHp();
                 } else {
                     attackDamage *= 2;
+                    target.setHp(-attackDamage);
                     setBuffed(false);
                     return getName() + " tackles " + target.getName() + "! -" +
                             attackDamage + " health!\n"
