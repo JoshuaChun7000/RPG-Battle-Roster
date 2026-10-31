@@ -4,7 +4,7 @@ public class Jester extends Combatant implements Specialist {
         super(name, hp, lvl, maxHp, buffed, down, stunned);
         this.luck = luck;
     }
-    public double getLuck() {
+    public int getLuck() {
         return luck;
     }
     public void rollLuck() {
