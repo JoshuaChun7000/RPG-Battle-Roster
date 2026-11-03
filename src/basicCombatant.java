@@ -52,4 +52,8 @@ public class basicCombatant extends Combatant {
                 "\nHP: " + getHp() +
                 "\nlvl: " + getLvl();
     }
+    @Override public String toCsv() {
+        return "Jester," + getName() + "," + getHp() + "," + getLvl() + "," +
+                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned();
+    }
 }

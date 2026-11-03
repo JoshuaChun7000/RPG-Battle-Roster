@@ -63,4 +63,5 @@ public abstract class Combatant {
     public boolean getStunned() {return !stunned;}
     public abstract String levelUp();
     public abstract String toString();
+    public abstract String toCsv();
 }

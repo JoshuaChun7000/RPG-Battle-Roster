@@ -162,4 +162,9 @@ public class Healer extends Combatant implements Specialist {
     public void regenerateHealing() {
         setHealing(getHealingRegen());
     }
+    @Override public String toCsv() {
+        return "Healer," + getName() + "," + getHp() + "," + getLvl() + "," +
+                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + "," +
+                getHealing() + "," + getMaxHealing();
+    }
 }

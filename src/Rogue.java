@@ -158,4 +158,9 @@ public class Rogue extends Combatant implements Specialist{
     public void regenerateStealth() {
         setStealth(getStealthRegen());
     }
+    @Override public String toCsv() {
+        return "Rogue," + getName() + "," + getHp() + "," + getLvl() + "," +
+                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + "," +
+                getStealth() + "," + getStealthRegen();
+    }
 }

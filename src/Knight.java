@@ -165,4 +165,9 @@ public class Knight extends Combatant implements Specialist{
     public void regenerateStamina() {
         setStamina(getStaminaRegen());
     }
+    @Override public String toCsv() {
+        return "Knight," + getName() + "," + getHp() + "," + getLvl() + "," +
+                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + "," +
+                getStamina() + "," + getMaxStamina() + "," + getStaminaRegen();
+    }
 }

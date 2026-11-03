@@ -145,4 +145,8 @@ public class Jester extends Combatant implements Specialist {
             return getName() + " is downed!";
         }
     }
+    @Override public String toCsv() {
+        return "Jester," + getName() + "," + getHp() + "," + getLvl() + "," +
+                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned();
+    }
 }

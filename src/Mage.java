@@ -169,4 +169,9 @@ public class Mage extends Combatant implements Specialist {
     public void regenerateMana() {
         setMana(getManaRegen());
     }
+    @Override public String toCsv() {
+        return "Mage," + getName() + "," + getHp() + "," + getLvl() + "," +
+                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + "," +
+                getMana() + "," + getMaxMana() + "," + getManaRegen();
+    }
 }
