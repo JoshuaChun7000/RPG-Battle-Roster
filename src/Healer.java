@@ -2,8 +2,9 @@ public class Healer extends Combatant implements Specialist {
     private int healing;
     private int maxHealing;
     public Healer(String name, int hp, int maxHp, int healing, int lvl,
-                  int maxHealing , boolean buffed, boolean down, boolean stunned) {
-        super(name, hp, lvl, maxHp, buffed, down, stunned);
+                  int maxHealing , boolean buffed, boolean down,
+                  boolean stunned, String type) {
+        super(name, hp, lvl, maxHp, buffed, down, stunned, type);
         this.healing = healing;
         this.maxHealing = maxHealing;
     }
@@ -163,8 +164,8 @@ public class Healer extends Combatant implements Specialist {
         setHealing(getHealingRegen());
     }
     @Override public String toCsv() {
-        return "Healer," + getName() + "," + getHp() + "," + getLvl() + "," +
+        return getName() + "," + getHp() + "," + getLvl() + "," +
                 getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + "," +
-                getHealing() + "," + getMaxHealing();
+                getType() + "," + getHealing() + "," + getMaxHealing();
     }
 }

@@ -1,7 +1,9 @@
 public class Jester extends Combatant implements Specialist {
     private int luck;
-    public Jester(String name, int hp, int maxHp, int luck, int lvl, boolean buffed, boolean down, boolean stunned) {
-        super(name, hp, lvl, maxHp, buffed, down, stunned);
+    public Jester(String name, int hp, int maxHp, int luck, int lvl,
+                  boolean buffed, boolean down, boolean stunned,
+                  String type) {
+        super(name, hp, lvl, maxHp, buffed, down, stunned, type);
         this.luck = luck;
     }
     public int getLuck() {
@@ -146,7 +148,8 @@ public class Jester extends Combatant implements Specialist {
         }
     }
     @Override public String toCsv() {
-        return "Jester," + getName() + "," + getHp() + "," + getLvl() + "," +
-                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned();
+        return getName() + "," + getHp() + "," + getLvl() + "," +
+                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + ","
+                + getType();
     }
 }

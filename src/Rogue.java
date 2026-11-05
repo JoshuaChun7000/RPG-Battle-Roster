@@ -3,8 +3,9 @@ public class Rogue extends Combatant implements Specialist{
     private int stealthRegen;
 
     public Rogue(String name, int hp, int lvl, int maxHp, int stealth,
-                 int stealthRegen, boolean buffed, boolean down, boolean stunned) {
-        super(name, hp, lvl, maxHp, buffed, down, stunned);
+                 int stealthRegen, boolean buffed, boolean down,
+                 boolean stunned, String type) {
+        super(name, hp, lvl, maxHp, buffed, down, stunned, type);
         this.stealth = stealth;
         this.stealthRegen = stealthRegen;
     }
@@ -159,8 +160,8 @@ public class Rogue extends Combatant implements Specialist{
         setStealth(getStealthRegen());
     }
     @Override public String toCsv() {
-        return "Rogue," + getName() + "," + getHp() + "," + getLvl() + "," +
+        return getName() + "," + getHp() + "," + getLvl() + "," +
                 getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + "," +
-                getStealth() + "," + getStealthRegen();
+                getType() + "," + getStealth() + "," + getStealthRegen();
     }
 }

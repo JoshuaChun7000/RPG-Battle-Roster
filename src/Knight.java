@@ -4,8 +4,9 @@ public class Knight extends Combatant implements Specialist{
     private int staminaRegen;
     public Knight(String name, int hp, int maxHp, int lvl, int stamina,
                   int maxStamina, int staminaRegen,
-                  boolean buffed, boolean down, boolean stunned) {
-        super(name, hp, lvl, maxHp, buffed, down, stunned);
+                  boolean buffed, boolean down, boolean stunned,
+                  String type) {
+        super(name, hp, lvl, maxHp, buffed, down, stunned, type);
         this.stamina = stamina;
         this.maxStamina = maxStamina;
         this.staminaRegen = staminaRegen;
@@ -166,8 +167,8 @@ public class Knight extends Combatant implements Specialist{
         setStamina(getStaminaRegen());
     }
     @Override public String toCsv() {
-        return "Knight," + getName() + "," + getHp() + "," + getLvl() + "," +
+        return getName() + "," + getHp() + "," + getLvl() + "," +
                 getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + "," +
-                getStamina() + "," + getMaxStamina() + "," + getStaminaRegen();
+                getType() + "," + getStamina() + "," + getMaxStamina() + "," + getStaminaRegen();
     }
 }

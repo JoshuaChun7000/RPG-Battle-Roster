@@ -3,8 +3,9 @@ public class Mage extends Combatant implements Specialist {
     private int maxMana;
     private int manaRegen;
     public Mage(String name, int hp, int maxHp, int mana, int lvl,
-                int maxMana, int manaRegen, boolean buffed, boolean down, boolean stunned) {
-        super(name, hp, lvl, maxHp, buffed, down, stunned);
+                int maxMana, int manaRegen, boolean buffed, boolean down,
+                boolean stunned, String type) {
+        super(name, hp, lvl, maxHp, buffed, down, stunned, type);
         this.mana = mana;
         this.maxMana = maxMana;
         this.manaRegen = manaRegen;
@@ -170,8 +171,8 @@ public class Mage extends Combatant implements Specialist {
         setMana(getManaRegen());
     }
     @Override public String toCsv() {
-        return "Mage," + getName() + "," + getHp() + "," + getLvl() + "," +
+        return getName() + "," + getHp() + "," + getLvl() + "," +
                 getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + "," +
-                getMana() + "," + getMaxMana() + "," + getManaRegen();
+                getType() + "," + getMana() + "," + getMaxMana() + "," + getManaRegen();
     }
 }

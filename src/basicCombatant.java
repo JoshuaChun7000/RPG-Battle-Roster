@@ -1,6 +1,8 @@
 public class basicCombatant extends Combatant {
-    public basicCombatant(String name, int hp, int lvl, int maxHp, boolean buffed, boolean down, boolean stunned) {
-        super(name, hp, lvl, maxHp, buffed, down, stunned);
+    public basicCombatant(String name, int hp, int lvl, int maxHp,
+                          boolean buffed, boolean down, boolean stunned,
+                          String type) {
+        super(name, hp, lvl, maxHp, buffed, down, stunned, type);
     }
     @Override public String attack(Combatant target){
         if (!getDown()) {
@@ -53,7 +55,8 @@ public class basicCombatant extends Combatant {
                 "\nlvl: " + getLvl();
     }
     @Override public String toCsv() {
-        return "Jester," + getName() + "," + getHp() + "," + getLvl() + "," +
-                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned();
+        return getName() + "," + getHp() + "," + getLvl() + "," +
+                getMaxHp() + "," + getBuffed() + "," + getDown() + "," + getStunned() + ","
+                + getType();
     }
 }
