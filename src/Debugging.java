@@ -15,6 +15,12 @@ public class Debugging {
         }
         enemy.setDown(true);
     }
+    public static void rezEveryone(ArrayList<Combatant> party, Combatant enemy) {
+        for (Combatant c : party) {
+            c.setDown(false);
+        }
+        enemy.setDown(false);
+    }
     public static void buffEveryone(ArrayList<Combatant> party, Combatant enemy) {
         for (Combatant c : party) {
             c.setBuffed(true);
