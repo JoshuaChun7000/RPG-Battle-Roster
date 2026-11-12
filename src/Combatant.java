@@ -54,6 +54,12 @@ public abstract class Combatant {
     }
     public void setLvl(int addLevel) {
         lvl+=addLevel;
+        if (lvl < 0) {
+            lvl = 0;
+        }
+        if (lvl > 30) {
+            lvl = 30;
+        }
     }
     public void setBuffed(boolean isBuffed) {
         buffed = isBuffed;

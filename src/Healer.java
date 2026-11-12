@@ -37,12 +37,14 @@ public class Healer extends Combatant implements Specialist {
                 } else {
                     attackDamage *= 2;
                     target.setHp(-attackDamage);
+                    target.setStunned(false);
                     setBuffed(false);
                     return getName() + " smacks " + target.getName() + " very hard! -" +
                             attackDamage + " health!\n"
                             + target.getName() + "'s current health: " + target.getHp();
                 }
             } else {
+                setStunned(false);
                 return getName() + " is stunned!";
             }
         } else {
@@ -93,6 +95,7 @@ public class Healer extends Combatant implements Specialist {
                             getHealing() + "\nRequired healing: 1";
                 }
             } else {
+                setStunned(false);
                 return getName() + " is stunned!";
             }
         } else {
@@ -119,6 +122,7 @@ public class Healer extends Combatant implements Specialist {
                     return getName() + " is too inexperienced for that move!";
                 }
             } else {
+                setStunned(false);
                 return getName() + " is stunned!";
             }
         } else {
@@ -154,6 +158,7 @@ public class Healer extends Combatant implements Specialist {
                     return getName() + " is too inexperienced for that move!";
                 }
             } else {
+                setStunned(false);
                 return getName() + " is stunned!";
             }
         } else {

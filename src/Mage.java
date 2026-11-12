@@ -39,12 +39,14 @@ public class Mage extends Combatant implements Specialist {
                 } else {
                     attackDamage *= 2;
                     target.setHp(-attackDamage);
+                    target.setStunned(false);
                     setBuffed(false);
                     return getName() + " bonks " + target.getName() + " very hard with their staff!\n" +
                             "-" + attackDamage + " health!\n" +
                             target.getName() + "'s current health: " + target.getHp();
                 }
             } else {
+                setStunned(false);
                 return getName() + " is stunned!";
             }
         } else {
@@ -103,6 +105,7 @@ public class Mage extends Combatant implements Specialist {
                             "Required mana: 50";
                 }
             } else {
+                setStunned(false);
                 return getName() + " is stunned!";
             }
         } else {
@@ -132,6 +135,7 @@ public class Mage extends Combatant implements Specialist {
                     return getName() + " is too inexperienced for that move!";
                 }
             } else {
+                setStunned(false);
                 return getName() + " is stunned!";
             }
         } else {
@@ -161,6 +165,7 @@ public class Mage extends Combatant implements Specialist {
                     return getName() + " is too inexperienced for that move!";
                 }
             } else {
+                setStunned(false);
                 return getName() + " is stunned!";
             }
         } else {

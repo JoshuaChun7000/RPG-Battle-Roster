@@ -54,10 +54,17 @@ void main() throws IOException {
         System.out.println("LINE: " + line);
         System.out.println("PARTS: " + parts.length);
         System.out.println("TYPE: " + parts[7]);
+        int hp = 0;
+        int lvl = 0;
+        int maxHp = 0;
         String name = parts[0];
-        int hp = Integer.parseInt(parts[1]);
-        int lvl = Integer.parseInt(parts[2]);
-        int maxHp = Integer.parseInt(parts[3]);
+        try {
+            hp = Integer.parseInt(parts[1]);
+            lvl = Integer.parseInt(parts[2]);
+            maxHp = Integer.parseInt(parts[3]);
+        } catch (NumberFormatException e) {
+            System.out.println("Skipping bad line: " + line);
+        }
         boolean buffed = Boolean.parseBoolean(parts[4]);
         boolean down = Boolean.parseBoolean(parts[5]);
         boolean stunned = Boolean.parseBoolean(parts[6]);
@@ -67,61 +74,81 @@ void main() throws IOException {
                 System.out.println("ERROR: Invalid Mage CSV: " + line);
                 continue;
             }
-            int mana = Integer.parseInt(parts[8]);
-            int maxMana = Integer.parseInt(parts[9]);
-            int manaRegen = Integer.parseInt(parts[10]);
-            mage = new Mage(name, hp, maxHp, mana, lvl, maxMana, manaRegen,
-                    buffed, down, stunned, type);
-            party.add(mage);
-            coolPeople.add(mage);
+            try {
+                int mana = Integer.parseInt(parts[8]);
+                int maxMana = Integer.parseInt(parts[9]);
+                int manaRegen = Integer.parseInt(parts[10]);
+                mage = new Mage(name, hp, maxHp, mana, lvl, maxMana, manaRegen,
+                        buffed, down, stunned, type);
+                party.add(mage);
+                coolPeople.add(mage);
+            } catch (NumberFormatException e) {
+                System.out.println("Skipping bad line: " + line);
+            }
         }
         if (type.equalsIgnoreCase("knight")) {
             if (parts.length < 11) {
                 System.out.println("ERROR: Invalid Knight CSV: " + line);
                 continue;
             }
-            int stamina = Integer.parseInt(parts[8]);
-            int maxStamina = Integer.parseInt(parts[9]);
-            int staminaRegen = Integer.parseInt(parts[10]);
-            knight = new Knight(name, hp, maxHp, lvl, stamina, maxStamina,
-                    staminaRegen, buffed, down, stunned, type);
-            party.add(knight);
-            coolPeople.add(knight);
+            try {
+                int stamina = Integer.parseInt(parts[8]);
+                int maxStamina = Integer.parseInt(parts[9]);
+                int staminaRegen = Integer.parseInt(parts[10]);
+                knight = new Knight(name, hp, maxHp, lvl, stamina, maxStamina,
+                        staminaRegen, buffed, down, stunned, type);
+                party.add(knight);
+                coolPeople.add(knight);
+            } catch (NumberFormatException e) {
+                System.out.println("Skipping bad line: " + line);
+            }
         }
         if (type.equalsIgnoreCase("rogue")) {
             if (parts.length < 10) {
                 System.out.println("ERROR: Invalid Rogue CSV: " + line);
                 continue;
             }
-            int stealth = Integer.parseInt(parts[8]);
-            int stealthRegen = Integer.parseInt(parts[9]);
-            rogue = new Rogue(name, hp, lvl, maxHp, stealth, stealthRegen, buffed,
-                    down, stunned, type);
-            party.add(rogue);
-            coolPeople.add(rogue);
+            try {
+                int stealth = Integer.parseInt(parts[8]);
+                int stealthRegen = Integer.parseInt(parts[9]);
+                rogue = new Rogue(name, hp, lvl, maxHp, stealth, stealthRegen, buffed,
+                        down, stunned, type);
+                party.add(rogue);
+                coolPeople.add(rogue);
+            } catch (NumberFormatException e) {
+                System.out.println("Skipping bad line: " + line);
+            }
         }
         if (type.equalsIgnoreCase("healer")) {
             if (parts.length < 10) {
                 System.out.println("ERROR: Invalid Mage CSV: " + line);
                 continue;
             }
-            int healing = Integer.parseInt(parts[8]);
-            int maxHealing = Integer.parseInt(parts[9]);
-            healer = new Healer(name, hp, maxHp, healing, lvl, maxHealing, buffed,
-                    down, stunned, type);
-            party.add(healer);
-            coolPeople.add(healer);
+            try {
+                int healing = Integer.parseInt(parts[8]);
+                int maxHealing = Integer.parseInt(parts[9]);
+                healer = new Healer(name, hp, maxHp, healing, lvl, maxHealing, buffed,
+                        down, stunned, type);
+                party.add(healer);
+                coolPeople.add(healer);
+            } catch (NumberFormatException e) {
+                System.out.println("Skipping bad line: " + line);
+            }
         }
         if (type.equalsIgnoreCase("jester")) {
             if (parts.length < 9) {
                 System.out.println("ERROR: Invalid Mage CSV: " + line);
                 continue;
             }
-            int luck = Integer.parseInt(parts[8]);
-            jester = new Jester(name, hp, maxHp, luck, lvl, buffed,
-                    down, stunned, type);
-            party.add(jester);
-            coolPeople.add(jester);
+            try {
+                int luck = Integer.parseInt(parts[8]);
+                jester = new Jester(name, hp, maxHp, luck, lvl, buffed,
+                        down, stunned, type);
+                party.add(jester);
+                coolPeople.add(jester);
+            } catch (NumberFormatException e) {
+                System.out.println("Skipping bad line: " + line);
+            }
         }
         if (type.equalsIgnoreCase("basic")) {
             enemy = new basicCombatant(name, hp, maxHp, lvl, buffed,
@@ -151,10 +178,13 @@ void main() throws IOException {
     Debugging.doTheThing(2);
     Debugging.showEveryoneStats(party, enemy);
     Main.useAllSpecialAbilities(party, mage, knight, rogue, healer, jester, coolPeople, enemy);
+    Debugging.rezEveryone(party, enemy);
     Debugging.doTheThing(2);
     Main.useAllSpecialAbilities(party, mage, knight, rogue, healer, jester, coolPeople, enemy);
+    Debugging.rezEveryone(party, enemy);
     Debugging.doTheThing(2);
     Main.useAllSpecialAbilities(party, mage, knight, rogue, healer, jester, coolPeople, enemy);
+    Debugging.rezEveryone(party, enemy);
     Debugging.doTheThing(2);
     System.out.println(System.getProperty("user.dir"));
     Debugging.everyoneLevelUp(party, enemy);
