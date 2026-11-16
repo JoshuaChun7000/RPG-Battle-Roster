@@ -53,10 +53,14 @@ void main() throws IOException {
         String[] parts = line.split(",");
         System.out.println("LINE: " + line);
         System.out.println("PARTS: " + parts.length);
+        if (parts.length < 8) {
+            System.out.println("ERROR: Invalid CSV: " + line);
+            continue;
+        }
         System.out.println("TYPE: " + parts[7]);
-        int hp = 0;
-        int lvl = 0;
-        int maxHp = 0;
+        int hp;
+        int lvl;
+        int maxHp;
         String name = parts[0];
         try {
             hp = Integer.parseInt(parts[1]);
@@ -64,6 +68,7 @@ void main() throws IOException {
             maxHp = Integer.parseInt(parts[3]);
         } catch (NumberFormatException e) {
             System.out.println("Skipping bad line: " + line);
+            continue;
         }
         boolean buffed = Boolean.parseBoolean(parts[4]);
         boolean down = Boolean.parseBoolean(parts[5]);
@@ -81,9 +86,9 @@ void main() throws IOException {
                 mage = new Mage(name, hp, maxHp, mana, lvl, maxMana, manaRegen,
                         buffed, down, stunned, type);
                 party.add(mage);
-                coolPeople.add(mage);
             } catch (NumberFormatException e) {
                 System.out.println("Skipping bad line: " + line);
+                continue;
             }
         }
         if (type.equalsIgnoreCase("knight")) {
@@ -98,9 +103,9 @@ void main() throws IOException {
                 knight = new Knight(name, hp, maxHp, lvl, stamina, maxStamina,
                         staminaRegen, buffed, down, stunned, type);
                 party.add(knight);
-                coolPeople.add(knight);
             } catch (NumberFormatException e) {
                 System.out.println("Skipping bad line: " + line);
+                continue;
             }
         }
         if (type.equalsIgnoreCase("rogue")) {
@@ -114,14 +119,14 @@ void main() throws IOException {
                 rogue = new Rogue(name, hp, lvl, maxHp, stealth, stealthRegen, buffed,
                         down, stunned, type);
                 party.add(rogue);
-                coolPeople.add(rogue);
             } catch (NumberFormatException e) {
                 System.out.println("Skipping bad line: " + line);
+                continue;
             }
         }
         if (type.equalsIgnoreCase("healer")) {
             if (parts.length < 10) {
-                System.out.println("ERROR: Invalid Mage CSV: " + line);
+                System.out.println("ERROR: Invalid Healer CSV: " + line);
                 continue;
             }
             try {
@@ -130,14 +135,14 @@ void main() throws IOException {
                 healer = new Healer(name, hp, maxHp, healing, lvl, maxHealing, buffed,
                         down, stunned, type);
                 party.add(healer);
-                coolPeople.add(healer);
             } catch (NumberFormatException e) {
                 System.out.println("Skipping bad line: " + line);
+                continue;
             }
         }
         if (type.equalsIgnoreCase("jester")) {
             if (parts.length < 9) {
-                System.out.println("ERROR: Invalid Mage CSV: " + line);
+                System.out.println("ERROR: Invalid Jester CSV: " + line);
                 continue;
             }
             try {
@@ -145,9 +150,9 @@ void main() throws IOException {
                 jester = new Jester(name, hp, maxHp, luck, lvl, buffed,
                         down, stunned, type);
                 party.add(jester);
-                coolPeople.add(jester);
             } catch (NumberFormatException e) {
                 System.out.println("Skipping bad line: " + line);
+                continue;
             }
         }
         if (type.equalsIgnoreCase("basic")) {
